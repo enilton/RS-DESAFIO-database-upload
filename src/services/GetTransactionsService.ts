@@ -14,17 +14,17 @@ interface GetTransactionsResponse {
   balance: Balance,
 }
 
-
-
 class GetTransactionsService {
   public async execute(): Promise<GetTransactionsResponse> {
 
     const transactionRepository = getCustomRepository(TransactionRepository);
     const getBalanceService = new GetBalanceService();
 
-    const transactions = await transactionRepository.find();
+    const transactions = await transactionRepository.find({
+      relations:['category'],
+    });
 
-    let balance = await getBalanceService.execute();
+    const balance = await getBalanceService.execute(transactions);
 
     return {
         transactions,
